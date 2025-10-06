@@ -131,6 +131,16 @@ PUT    /api/Books/{id}          Update book
 DELETE /api/Books/{id}          Delete book
 ```
 
+### Borrows
+
+```
+GET    /api/borrows             Get all borrows (admin) or current user's borrows
+GET    /api/borrows/{id}        Get specific borrow record
+POST   /api/borrows             Create new borrow (borrow a book)
+PUT    /api/borrows/return/{id} Return book
+DELETE /api/borrows/{id}        Delete borrow record
+```
+
 ### Authors
 
 ```
@@ -149,16 +159,6 @@ GET    /api/categories/{id}     Get category by ID
 POST   /api/categories          Create new category
 PUT    /api/categories/{id}     Update category
 DELETE /api/categories/{id}     Delete category
-```
-
-### Borrows
-
-```
-GET    /api/borrows             Get all borrows (admin) or current user's borrows
-GET    /api/borrows/{id}        Get specific borrow record
-POST   /api/borrows             Create new borrow (borrow a book)
-PUT    /api/borrows/return/{id} Return book
-DELETE /api/borrows/{id}        Delete borrow record
 ```
 
 ---
