@@ -1,7 +1,9 @@
-﻿using Library.Application.Dtos.Book;
+﻿using FluentAssertions;
+using Library.Application.Common;
+using Library.Domain.Entities;
 using System.Net;
 using System.Net.Http.Json;
-using FluentAssertions;
+using System.Text.Json;
 
 namespace Library.IntegrationTests;
 
@@ -18,9 +20,11 @@ public class BooksIntegrationTests : IntegrationTestBase
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var books = await response.Content.ReadFromJsonAsync<List<BookDto>>();
+        var books = await response.Content.ReadFromJsonAsync<PaginatedResult<Book>>(
+        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
         books.Should().NotBeNull();
-        books.Should().Contain(b => b.Title == "Harry Potter");
-        books.First().TotalCopies.Should().BeGreaterThanOrEqualTo(0);
+        books.Items.Should().Contain(b => b.Title == "Harry Potter");
+        books.Items.First().TotalCopies.Should().BeGreaterThanOrEqualTo(0);
     }
 }

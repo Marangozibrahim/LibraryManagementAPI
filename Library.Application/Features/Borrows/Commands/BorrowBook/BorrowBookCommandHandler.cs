@@ -33,7 +33,6 @@ public sealed class BorrowBookCommandHandler(
 
         if (existingBorrow != null)
         {
-            await _uow.RollbackTransactionAsync(cancellationToken);
             return Result<Guid>.Failure("You already have this book borrowed");
         }
 

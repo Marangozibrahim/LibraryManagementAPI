@@ -6,9 +6,9 @@ namespace Library.Application.Features.Books.Commands.DeleteBook;
 
 public sealed class DeleteBookCommandHandler(
     IUnitOfWork _uow) 
-    : IRequestHandler<DeleteBookCommand>
+    : IRequestHandler<DeleteBookCommand, Unit>
 {
-    public async Task Handle(DeleteBookCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteBookCommand request, CancellationToken cancellationToken)
     {
         var bookRepo = _uow.Repository<Book>();
         var borrowRepo = _uow.Repository<Borrow>();
@@ -27,5 +27,7 @@ public sealed class DeleteBookCommandHandler(
 
         bookRepo.Delete(book);
         await _uow.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
     }
 }

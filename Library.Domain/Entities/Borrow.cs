@@ -17,7 +17,6 @@ namespace Library.Domain.Entities
 
         public Borrow(Guid bookId, Guid userId, DateTime? dueDate = null)
         {
-            //Book = book ?? throw new ArgumentNullException(nameof(book));
             BookId = bookId;
             UserId = userId;
             DueDate = dueDate;

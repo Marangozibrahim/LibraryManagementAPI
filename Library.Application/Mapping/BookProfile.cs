@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Library.Application.Dtos.Book;
+using Library.Application.Features.Authors.Commands.UpdateAuthor;
 using Library.Domain.Entities;
 
 namespace Library.Application.Mapping;
@@ -11,6 +12,5 @@ public class BookProfile : Profile
         CreateMap<Book, BookDto>()
             .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.Author.Name))
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
-        
     }
 }

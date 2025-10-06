@@ -1,7 +1,7 @@
-﻿using Library.Application.Features.Books.Commands.AddBook;
+﻿using Library.Application.Dtos.Book;
+using Library.Application.Features.Books.Commands.AddBook;
 using Library.Application.Features.Books.Commands.DeleteBook;
 using Library.Application.Features.Books.Commands.UpdateBook;
-using Library.Application.Features.Books.Queries.GetAllBooks;
 using Library.Application.Features.Books.Queries.GetBookById;
 using Library.Application.Features.Books.Queries.GetBooks;
 using MediatR;
@@ -9,14 +9,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/books")]
     [ApiController]
     public class BooksController(IMediator _mediator) : ControllerBase
     {
-        [HttpGet()]
-        public async Task<IActionResult> GetAllBooksAsync()
+        [HttpGet]
+        public async Task<IActionResult> GetFilteredResultsAsync([FromQuery] GetBooksQuery query)
         {
-            var result = await _mediator.Send(new GetAllBooksQuery());
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
 
@@ -27,32 +27,34 @@ namespace Library.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("filtered")]
-        public async Task<IActionResult> GetFilteredResultsAsync([FromQuery] GetBooksQuery query)
-        {
-            var result = await _mediator.Send(query);
-            return Ok(result);
-        }
-
-        [HttpPost("add-book")]
+        [HttpPost]
         public async Task<IActionResult> AddBookAsync([FromBody] AddBookCommand request)
         {
             var result = await _mediator.Send(request);
             return Ok(result);
         }
 
-        [HttpDelete("delete-book")]
-        public async Task<IActionResult> DeleteBookAsync([FromBody] DeleteBookCommand request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBookAsync(Guid id, [FromBody] UpdateBookRequest request)
         {
-            await _mediator.Send(request);
-            return Ok();
+            var command = new UpdateBookCommand(
+                id,
+                request.Title,
+                request.TotalCopies,
+                request.CopiesAvailable,
+                request.AuthorId,
+                request.CategoryId
+            );
+
+            await _mediator.Send(command);
+            return NoContent();
         }
 
-        [HttpPut("update-book")]
-        public async Task<IActionResult> UpdateBookAsync([FromBody] UpdateBookCommand request)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBookAsync(Guid id)
         {
-            await _mediator.Send(request);
-            return Ok();
+            await _mediator.Send(new DeleteBookCommand(id));
+            return NoContent();
         }
     }
 }

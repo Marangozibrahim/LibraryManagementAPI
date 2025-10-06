@@ -17,11 +17,21 @@ public sealed class GetBorrowsByUserQueryHandler(
 {
     public async Task<IReadOnlyList<BorrowDto>> Handle(GetBorrowsByUserQuery request, CancellationToken cancellationToken)
     {
-        var userId = _currentUserService.UserId!;
-        var userName = _currentUserService.UserName!;
+        IReadOnlyList<Borrow> borrows;
 
-        var spec = new GetBorrowsByUserSpec(userId.Value);
-        var borrows = await _uow.Repository<Borrow>().ListAsync(spec, cancellationToken);
+        if (_currentUserService.IsInRole("Admin"))
+        {
+            var spec = new GetBorrowsByAdminSpec();
+            borrows = await _uow.Repository<Borrow>().ListAsync(spec, cancellationToken);
+        }
+        else
+        {
+            var userId = _currentUserService.UserId
+                ?? throw new InvalidOperationException("User ID cannot be null.");
+
+            var spec = new GetBorrowsByUserSpec(userId);
+            borrows = await _uow.Repository<Borrow>().ListAsync(spec, cancellationToken);
+        }
 
         return _mapper.Map<IReadOnlyList<BorrowDto>>(borrows);
     }

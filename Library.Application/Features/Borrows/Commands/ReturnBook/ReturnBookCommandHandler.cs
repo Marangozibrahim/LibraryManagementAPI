@@ -29,7 +29,6 @@ public sealed class ReturnBookCommandHandler(
 
         borrow.ReturnBook();
         book.IncreaseCopiesAvailableByOne();
-        _uow.Repository<Book>().Update(book);
         await _uow.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;

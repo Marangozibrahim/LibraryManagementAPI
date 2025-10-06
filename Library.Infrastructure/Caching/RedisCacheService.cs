@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace Library.Infrastructure.Services;
+namespace Library.Infrastructure.Caching;
 public class RedisCacheService : ICacheService
 {
     private readonly IDistributedCache _distributedCache;
@@ -62,13 +62,6 @@ public class RedisCacheService : ICacheService
         {
             _logger.LogError(ex, "Error removing cache key {Key}", key);
         }
-    }
-
-    public async Task RemoveByPatternAsync(string pattern)
-    {
-        // Note: This requires StackExchange.Redis for pattern-based deletion
-        _logger.LogWarning("Pattern-based cache removal not implemented with IDistributedCache");
-        await Task.CompletedTask;
     }
 
     public async Task<bool> ExistsAsync(string key)

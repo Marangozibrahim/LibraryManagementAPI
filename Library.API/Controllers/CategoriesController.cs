@@ -1,13 +1,14 @@
-﻿using Library.Application.Features.Categories.Commands.AddCategory;
+﻿using Library.Application.Dtos.Category;
+using Library.Application.Features.Categories.Commands.AddCategory;
 using Library.Application.Features.Categories.Commands.DeleteCategory;
 using Library.Application.Features.Categories.Commands.UpdateCategory;
 using Library.Application.Features.Categories.Queries.GetCategories;
+using Library.Application.Features.Categories.Queries.GetCategoryById;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.API.Controllers;
-[Route("api/[controller]")]
+[Route("api/categories")]
 [ApiController]
 public class CategoriesController(IMediator _mediator) : ControllerBase
 {
@@ -18,24 +19,33 @@ public class CategoriesController(IMediator _mediator) : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("add-category")]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetCategoryByIdAsync(Guid id)
+    {
+        var result = await _mediator.Send(new GetCategoryByIdQuery(id));
+        return Ok(result);
+    }
+
+
+    [HttpPost]
     public async Task<IActionResult> AddCategory([FromBody] AddCategoryCommand request)
     {
         var result = await _mediator.Send(request);
         return Ok(result);
     }
 
-    [HttpDelete("delete-category")]
-    public async Task<IActionResult> DeleteCategory([FromBody] DeleteCategoryCommand request)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategoryRequest request)
     {
-        await _mediator.Send(request);
-        return Ok();
+        var command = new UpdateCategoryCommand(id, request.Name);
+        await _mediator.Send(command);
+        return NoContent();
     }
 
-    [HttpPut("update-category")]
-    public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryCommand request)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCategory(Guid id)
     {
-        await _mediator.Send(request);
-        return Ok();
+        await _mediator.Send(new DeleteCategoryCommand(id));
+        return NoContent();
     }
 }

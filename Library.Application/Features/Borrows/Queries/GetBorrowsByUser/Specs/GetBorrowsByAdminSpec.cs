@@ -2,13 +2,10 @@
 using Library.Domain.Entities;
 
 namespace Library.Application.Features.Borrows.Queries.GetBorrowsByUser.Specs;
-
-public sealed class GetBorrowsByUserSpec : BaseSpecification<Borrow>
+public sealed class GetBorrowsByAdminSpec : BaseSpecification<Borrow>
 {
-    public GetBorrowsByUserSpec(Guid userId)
+    public GetBorrowsByAdminSpec()
     {
-        Criteria = bw => bw.UserId == userId;
-
         AddInclude(bw => bw.Book);
 
         AsNoTracking = true;
